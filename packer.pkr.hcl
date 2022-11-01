@@ -1,26 +1,13 @@
+locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
 
-packer {
-  required_plugins {
-    amazon = {
-      version = ">= 0.0.2"
-      source  = "github.com/hashicorp/amazon"
-    }
-  }
-}
-
-source "amazon-ebs" "ubuntu" {
- access_key = ""
-  secret_key = ""
-  ami_name      = "ami-packer-image"
+source "amazon-ebs" "Linux" {
+  ami_name      = "packer${local.timestamp}"
   instance_type = "t2.micro"
   region        = "ap-south-1"
-  source_ami = "ami-01216e7612243e0ef"
-  ssh_username = "ec2-user"
+  source_ami    = "ami-0e6329e222e662a52"
+  ssh_username  = "ec2-user"
 }
 
 build {
-  name = "e2esa-packer"
-  sources = [
-    "source.amazon-ebs.ubuntu"
-  ]
+  sources = ["source.amazon-ebs.Linux"]
 }
